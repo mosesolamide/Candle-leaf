@@ -16,7 +16,17 @@ type AuthProps = {
   signOut: () => Promise<SignOutResult>
   session: Session | null
   isLoading: boolean
+  showMessage: boolean
+  setShowMessage: React.Dispatch<React.SetStateAction<boolean>>
+  message: Message
+  setMessage: React.Dispatch<React.SetStateAction<Message>>
 }
+
+type Message = {
+      success: boolean
+      message: string
+    }
+  | null
 
 const AuthContext = createContext<AuthProps | undefined>(undefined)
 
@@ -27,6 +37,8 @@ export default function AuthContextProvider({
 }): JSX.Element {
   const [session, setSession] = useState<Session | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [showMessage, setShowMessage] = useState(false)
+  const [message, setMessage] = useState<Message>(null)
 
   useEffect(() => {
     async function getInitialSession() {
@@ -54,59 +66,68 @@ export default function AuthContextProvider({
     }
   }, [])
 
-const adminSignIn = async (
-  email: string,
-  password: string
-): Promise<SignInResult> => {
-  try {
-    // 1. Sign in
-    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        // remove message
+      setShowMessage(false)
+    }, 5000)
+    // clear timout to avoid memory leak
+    return () => clearTimeout(timer)
+  }, [showMessage])
 
-    if (authError) {
-      return { success: false, error: authError.message }
-    }
+  const adminSignIn = async (
+    email: string,
+    password: string
+  ): Promise<SignInResult> => {
+    try {
+      // 1. Sign in
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
-    // 2. Get user ID from auth session
-    const userId = authData.user?.id;
-    if (!userId) throw new Error("No user ID found")
+      if (authError) {
+        return { success: false, error: authError.message }
+      }
 
-    // 3. Check profiles table (single query)
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', userId) // Match auth user ID with profiles table
-      .single() // Expect exactly 1 match
+      // 2. Get user ID from auth session
+      const userId = authData.user?.id;
+      if (!userId) throw new Error("No user ID found")
 
-    // 4. Verify admin role
-    if (profileError || !profile) {
-      throw new Error("User not found")
-    }
+      // 3. Check profiles table (single query)
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId) // Match auth user ID with profiles table
+        .single() // Expect exactly 1 match
 
-    if (profile.role !== 'admin') {
-      await supabase.auth.signOut() // Revoke session if not admin
+      // 4. Verify admin role
+      if (profileError || !profile) {
+        throw new Error("User not found")
+      }
+
+      if (profile.role !== 'admin') {
+        await supabase.auth.signOut() // Revoke session if not admin
+        return { 
+          success: false, 
+          error: "Access denied: This page is for admin only!!!!!! go back or you will be killed lol" 
+        }
+      }
+
+      // 5. Success
+      return { 
+        success: true, 
+        data: { ...authData, role: 'admin' } 
+      }
+
+    } catch (error: any) {
+      await supabase.auth.signOut() // Clean up on error
       return { 
         success: false, 
-        error: "Access denied: This page is for admin only!!!!!! go back or you will be killed lol" 
+        error: error.message || "Authentication failed" 
       }
     }
-
-    // 5. Success
-    return { 
-      success: true, 
-      data: { ...authData, role: 'admin' } 
-    }
-
-  } catch (error: any) {
-    await supabase.auth.signOut() // Clean up on error
-    return { 
-      success: false, 
-      error: error.message || "Authentication failed" 
-    }
   }
-}
 
   const signOut = async (): Promise<SignOutResult> => {
     try {
@@ -127,7 +148,18 @@ const adminSignIn = async (
   }
 
   return (
-    <AuthContext.Provider value={{ adminSignIn, session, signOut, isLoading }}>
+    <AuthContext.Provider
+      value={{
+        adminSignIn,
+        session,
+        signOut,
+        isLoading,
+        showMessage,
+        setShowMessage,
+        message,
+        setMessage
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )

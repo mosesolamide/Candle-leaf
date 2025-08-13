@@ -1,25 +1,46 @@
 import supabase from "../supabase-client"
 
-export default function useFunction(){
-    const renderProducts = async () => {
-        try{
-        const { data:productData, error:productError } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false })
+export type Product = {
+  name: string
+  description: string
+  price: number
+  image_url: string
+  wax: string
+  weight: number
+  dimension: string
+  burning_time: string
+  fragrance: string
+  id: string
+}
 
-        if(productError){
-            throw productError
-        }
+type ProductResult =
+  | { success: true; data: Product[] }
+  | { success: false; error: string }
 
-        return {success: true , data: productData}
-        }catch(error:any){
-        console.error('Error fetching product:', error)
-        return { 
-            success: false, 
-            error: error.message || 'Getting product failed' 
-        }
-        }
+export default function useFunction() {
+  const getProducts = async (): Promise<ProductResult> => {
+    try {
+      const { data: productData, error: productError } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false })
+
+      if (productError) {
+        throw productError
+      }
+
+      // Ensure we always return an array (not null)
+      return { success: true, data: productData  }
+    } catch (error: any) {
+      console.error("Error fetching product:", error)
+      return {
+        success: false,
+        error: error.message || "Getting product failed",
+      }
     }
-    return { renderProducts }
+  }
+
+  
+
+  return { getProducts }
 }
