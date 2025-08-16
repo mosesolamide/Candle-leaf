@@ -20,6 +20,9 @@ type AuthProps = {
   setShowMessage: React.Dispatch<React.SetStateAction<boolean>>
   message: Message
   setMessage: React.Dispatch<React.SetStateAction<Message>>
+  userSignIn: (email: string, password: string) => Promise<SignInResult>
+  signUpNewUser: (email: string, password: string, name:string) => any
+  signInWithGoogle: () => any
 }
 
 type Message = {
@@ -70,7 +73,7 @@ export default function AuthContextProvider({
     const timer = setTimeout(() => {
         // remove message
       setShowMessage(false)
-    }, 5000)
+    }, 3000)
     // clear timout to avoid memory leak
     return () => clearTimeout(timer)
   }, [showMessage])
@@ -103,7 +106,7 @@ export default function AuthContextProvider({
 
       // 4. Verify admin role
       if (profileError || !profile) {
-        throw new Error("User not found")
+        throw new Error("Access denied: This page is for admin only!!!!!! go back or you will be killed lol")
       }
 
       if (profile.role !== 'admin') {
@@ -147,6 +150,67 @@ export default function AuthContextProvider({
     }
   }
 
+  const userSignIn = async (
+    email: string,
+    password: string
+    ): Promise<SignInResult> => {
+    try {
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (authError) {
+        return { success: false, error: authError.message }
+      }
+      return { success: true, data: authData }
+    } catch (error: any) {
+      return { success: false, error: error.message || "Authentication failed" }
+    }
+  }
+
+    const signUpNewUser = async (email:string, password:string, name:string) => {
+    try {
+      const { data: authData, error:authErr } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: {
+            name: name,
+          },
+        },
+      })
+      if (authErr) {
+        console.error('Supabase sign-up error:', authErr.message)
+        return { success: false, error: authErr.message }
+      }    
+      return { success: true, authData }
+    } catch (error: any) {
+      return { success: false, error: 'An unexpected error occurred. Please try again.' }
+    }
+  }
+
+  async function signInWithGoogle() {
+    try{
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: "https://candle-leaf.netlify.app/" // 👈 after login redirect
+        }
+      })
+
+      if (error) {
+        console.error("Google Sign-In Error:", error.message)
+      } 
+      setMessage({ success: true, message: "Successfully Sign Up" })
+      setShowMessage(true)
+      return { success: true, data}
+    }catch(err: any){
+      return { success: false, error: err.message}
+    }
+  }
+
+
   return (
     <AuthContext.Provider
       value={{
@@ -157,7 +221,10 @@ export default function AuthContextProvider({
         showMessage,
         setShowMessage,
         message,
-        setMessage
+        setMessage,
+        userSignIn,
+        signUpNewUser,
+        signInWithGoogle
       }}
     >
       {children}

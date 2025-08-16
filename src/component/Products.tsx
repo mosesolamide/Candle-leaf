@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 import { useLoaderData, Await } from "react-router"
-import type { Product } from "./useFunction"
+import type { Product } from "../hooks/useFunction"
 
 export default function Products({ size }: { size?: number }){
   const { product } = useLoaderData()
@@ -10,12 +10,20 @@ export default function Products({ size }: { size?: number }){
       <Await resolve={product}>
         {(productList) => (
           <ul 
-            className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] lg:grid-cols-4 gap-4 lg:gap-6 px-10 md:px-20 my-8"
+            className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] lg:grid-cols-4 gap-4 lg:gap-6 my-8 px-10 md:px-20"
           >
-            {productList.data.slice(0, size || productList.length).map((item:Product) => (
+            {productList.data?.slice(0, size || productList.length).map((item:Product) => (
               <li key={item.id}>
-                <article className="shadow-md bg-[#F7F8FA] rounded-md">
-                  <img src={item.image_url} alt="products available" />
+                <article 
+                  className="shadow-md bg-[#F7F8FA] rounded-md cursor-pointer"
+                >
+                  <div className="flex justify-center">
+                    <img 
+                      src={item.image_url} 
+                      alt="products available" 
+                      className="w-30 md:w-40 h-20 md:h-30" 
+                    />
+                  </div>
                   <div className="flex justify-between items-center bg-white py-6 px-4 rounded-b-sm">
                     <span className="text-xs font-semibold">{item.name}</span>
                     <span className="text-xs font-semibold text-[#56B280]">${item.price}</span>
@@ -29,7 +37,3 @@ export default function Products({ size }: { size?: number }){
     </Suspense>
   )
 }
-// Wax: Top grade Soy wax that delivers a smoke less,  consistent burn
-// Fragrance: Premium quality ingredients with natural essential oils 
-// Burning Time: 70-75 hours
-// Dimension: 10cm x 5cm 

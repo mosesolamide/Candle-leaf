@@ -8,6 +8,10 @@ const AdminDashBoard = lazy(() => import("./admin/AdminDashBoard"))
 const AdminSignIn = lazy(() => import("./admin/AdminSignIn"))
 const ProtectAdmin = lazy( () => import("./admin/ProtectAdmin"))
 const Error = lazy( () => import("./component/Error"))
+const ContactUs = lazy( () => import("./pages/ContactUs"))
+const About = lazy( () => import("./pages/About"))
+const SignUp = lazy( () => import("./component/SignUp"))
+const Login = lazy( () => import("./component/Login"))
 
 function Router() {
     const router = createBrowserRouter(createRoutesFromElements(
@@ -19,7 +23,11 @@ function Router() {
             loader={homeLoader}
             errorElement={<Error />}
           />
+          <Route path="/about-us" element={<About />} />
+          <Route path="/contact-us" element={<ContactUs />} />
         </Route>
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
 
         {/* Admin route */}
         <Route path="admin">

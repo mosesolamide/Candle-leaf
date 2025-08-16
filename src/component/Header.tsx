@@ -2,10 +2,24 @@ import { useState } from "react"
 import { NavLink } from "react-router"
 import { MdOutlineShoppingCart } from "react-icons/md"
 import { CiUser, CiMenuBurger } from "react-icons/ci"
+import { IoIosLogOut } from "react-icons/io"
 import Logo from "../assets/logo.webp"
+import { useAuth } from "../context/AuthContext"
 
 export default function Navbar() {
+    const { session, signOut, setMessage, setShowMessage } = useAuth()
     const [openBurger, setOpenBurger] = useState<boolean>(false)
+
+    const handleSignout = async () => {
+      const { error } = await signOut()
+      if (error) {
+        console.error("Error signout: ", error)
+        setMessage({ success: false, message: `Error signout: ${error}` })
+      }
+      setMessage({ success: true, message: "You are log out. Goodbye" })
+      setShowMessage(true)
+    }
+
   return (
     <nav className="flex items-center justify-between py-4 px-6 bg-white shadow-md">
       {/* Logo */}
@@ -35,13 +49,28 @@ export default function Navbar() {
           </li>
           <li className="cursor-pointer hover:text-green-600">
             <NavLink
-              to='/about-us'
+              to='/contact-us'
               className={ ({isActive}) => isActive? 'text-green-600': ''  }
             >
                 Contact Us
             </NavLink>
           </li>
         </ul>
+        {!session? (
+          <div className="flex gap-4">
+            <NavLink
+              to='login'
+              className="bg-[#56B280] hover:bg-[#36694d] text-white px-4 py-2 rounded-sm"
+            >
+                Login</NavLink>
+            <NavLink
+              to='sign-up'
+              className="bg-[#56B280] hover:bg-[#36694d] text-white px-4 py-2 rounded-sm"
+            >
+                SignUp</NavLink>
+          </div>
+        ):
+        (
         <ul className="flex space-x-4 text-gray-700 mt-2 md:mt-0">
           <NavLink
             to="/cart"
@@ -61,7 +90,17 @@ export default function Navbar() {
                 className="cursor-pointer hover:text-green-600"
             />
           </NavLink>
+          <button
+            onClick={handleSignout}
+            type="button"
+          >
+            <IoIosLogOut
+                size={28}
+                className="cursor-pointer hover:text-green-600"
+            />
+          </button>
         </ul>
+        )}
       </div>
 
       {/* Mobile Menu Icon */}

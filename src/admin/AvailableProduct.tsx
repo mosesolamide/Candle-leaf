@@ -1,7 +1,7 @@
 import type { JSX } from "react"
 import { useState, useEffect } from "react"
-import type { Product } from "../component/useFunction"
-import useFunction from "../component/useFunction"
+import type { Product } from "../hooks/useFunction"
+import useFunction from "../hooks/useFunction"
 import { useAuth } from "../context/AuthContext"
 import supabase from "../supabase-client"
 
