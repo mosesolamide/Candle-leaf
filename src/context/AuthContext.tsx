@@ -208,7 +208,6 @@ export default function AuthContextProvider({
     }
   }
 
-
   return (
     <AuthContext.Provider
       value={{

@@ -21,7 +21,7 @@ export default function Products({ size }: { size?: number }){
                     <img 
                       src={item.image_url} 
                       alt="products available" 
-                      className="w-30 md:w-40 h-20 md:h-30" 
+                      className="w-32 md:w-44 h-24 md:h-34" 
                     />
                   </div>
                   <div className="flex justify-between items-center bg-white py-6 px-4 rounded-b-sm">
