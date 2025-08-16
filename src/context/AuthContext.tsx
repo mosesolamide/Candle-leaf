@@ -201,9 +201,7 @@ export default function AuthContextProvider({
 
       if (error) {
         console.error("Google Sign-In Error:", error.message)
-      } 
-      setMessage({ success: true, message: "Successfully Sign Up" })
-      setShowMessage(true)
+      }
       return { success: true, data}
     }catch(err: any){
       return { success: false, error: err.message}
