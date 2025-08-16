@@ -195,7 +195,7 @@ export default function AuthContextProvider({
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: "https://candle-leaf.netlify.app/" // 👈 after login redirect
+          redirectTo: "https://candle-leaf.netlify.app/" 
         }
       })
 
