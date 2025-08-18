@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { NavLink } from "react-router"
 import { MdOutlineShoppingCart } from "react-icons/md"
-import { CiUser, CiMenuBurger } from "react-icons/ci"
+import { CiMenuBurger } from "react-icons/ci"
 import { IoIosLogOut } from "react-icons/io"
 import Logo from "../assets/logo.webp"
 import { useAuth } from "../context/AuthContext"
