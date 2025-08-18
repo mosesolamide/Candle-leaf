@@ -84,7 +84,7 @@ export default function Cart(): JSX.Element {
           ))}
         </tbody>
       </table>
-      <div className="flex gap-4 mt-4 items-center">
+      <div className="flex gap-4 mt-6 items-center">
         <span className="font-bold">Sub-total:</span>
         <span>${total}</span>
         <button className="px-6 py-1 bg-[#56B280] text-white rounded-sm">Checkout</button>
