@@ -1,7 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router"
 import Layout from "./component/Layout"
 import Home, { loader as homeLoader } from "./pages/Home"
-import Loading from "./component/Loading"
 
 // Only Home is eager (first page), everything else is lazy
 function Router() {
