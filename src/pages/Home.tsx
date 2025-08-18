@@ -1,5 +1,5 @@
 import type { JSX } from 'react'
-import useFunction from '../hooks/useFunction'
+import { getProducts } from '../supabase-client'
 import HeroImg from '../assets/hero-pic.webp'
 import Products from '../component/Products'
 import Clean from '../component/Clean'
@@ -7,13 +7,11 @@ import Luisa from '../assets/luisa.webp'
 import Mart from '../assets/mart.webp'
 import Edoardo from '../assets/edoardo.webp'
 
-
 export async function loader() {
-  const { getProducts } = useFunction()
   return { product: getProducts()  }
 }
 export default function Home(): JSX.Element {
-        const testimonials = [
+    const testimonials = [
       {
         img: Luisa, // replace with image path
         rating: 4,

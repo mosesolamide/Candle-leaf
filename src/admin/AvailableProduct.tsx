@@ -1,12 +1,11 @@
 import type { JSX } from "react"
 import { useState, useEffect } from "react"
 import type { Product } from "../hooks/useFunction"
-import useFunction from "../hooks/useFunction"
+import { getProducts } from "../supabase-client"
 import { useAuth } from "../context/AuthContext"
 import supabase from "../supabase-client"
 
 export default function AvailableProduct(): JSX.Element {
-  const { getProducts } = useFunction()
   const { setMessage, setShowMessage } = useAuth()
   const [products, setProducts] = useState<Product[]>([])
 
@@ -15,7 +14,7 @@ export default function AvailableProduct(): JSX.Element {
     try {
       const result = await getProducts()
       if (result.success) {
-        setProducts(result.data)
+        setProducts(result.data as Product[])
       } else {
         setMessage({ success: false, message: result.error })
         setShowMessage(true)

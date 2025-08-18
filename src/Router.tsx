@@ -1,52 +1,110 @@
-import { lazy } from "react"
-import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from "react-router"
-import Home, {loader as homeLoader} from "./pages/Home"
+import { createBrowserRouter, RouterProvider } from "react-router"
 import Layout from "./component/Layout"
+import Home, { loader as homeLoader } from "./pages/Home"
+import Loading from "./component/Loading"
 
-// route that are not needed when the website first loads
-const AdminDashBoard = lazy(() => import("./admin/AdminDashBoard"))
-const AdminSignIn = lazy(() => import("./admin/AdminSignIn"))
-const ProtectAdmin = lazy( () => import("./admin/ProtectAdmin"))
-const Error = lazy( () => import("./component/Error"))
-const ContactUs = lazy( () => import("./pages/ContactUs"))
-const About = lazy( () => import("./pages/About"))
-const SignUp = lazy( () => import("./component/SignUp"))
-const Login = lazy( () => import("./component/Login"))
-
+// Only Home is eager (first page), everything else is lazy
 function Router() {
-    const router = createBrowserRouter(createRoutesFromElements(
-      <>
-        <Route path="/" element={<Layout />} >
-          <Route 
-            index
-            element={<Home />} 
-            loader={homeLoader}
-            errorElement={<Error />}
-          />
-          <Route path="/about-us" element={<About />} />
-          <Route path="/contact-us" element={<ContactUs />} />
-        </Route>
-        <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/login" element={<Login />} />
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Layout />,
+      children: [
+        {
+          index: true,
+          element: <Home />,
+          loader: homeLoader,
+          // error boundary for this route
+          lazy: async () => {
+            const mod = await import("./component/Error")
+            return { ErrorBoundary: mod.default }
+          }
+        },
+        {
+          path: "about-us",
+          lazy: async () => {
+            const mod = await import("./pages/About")
+            return { Component: mod.default }
+          }
+        },
+        {
+          path: "contact-us",
+          lazy: async () => {
+            const mod = await import("./pages/ContactUs")
+            return { Component: mod.default }
+          }
+        },
+        {
+          path: "cart",
+          lazy: async () => {
+            const mod = await import("./pages/Cart")
+            return { Component: mod.default }
+          }
+        },
+        {
+          path: "preview",
+          lazy: async () => {
+            const mod = await import("./pages/PreviewProduct")
+            return { Component: mod.default }
+          }
+        },
+        {
+          path:"*",
+          lazy: async () => {
+            const mod = await import("./pages/NotFound")
+            return { Component: mod.default }
+          }
+        }
+      ],
+    },
 
-        {/* Admin route */}
-        <Route path="admin">
-          {/* Public admin routes */}
-          <Route path="sign-in" element={<AdminSignIn />} />
-          
-          {/* Protected admin routes */}
-          <Route 
-            index 
-            element={
-              <ProtectAdmin>
-                <AdminDashBoard />
-              </ProtectAdmin>
-            } 
-          />
-        </Route>
-      </>
-    ))
-    return <RouterProvider router={router} />   
+    {
+      path: "/sign-up",
+      lazy: async () => {
+        const mod = await import("./component/SignUp")
+        return { Component: mod.default }
+      }
+    },
+    {
+      path: "/login",
+      lazy: async () => {
+        const mod = await import("./component/Login")
+        return { Component: mod.default }
+      }
+    },
+
+    // Admin routes
+    {
+      path: "/admin",
+      children: [
+        {
+          path: "sign-in",
+          lazy: async () => {
+            const mod = await import("./admin/AdminSignIn")
+            return { Component: mod.default }
+          }
+        },
+        {
+          index: true,
+          lazy: async () => {
+            const [Protect, Dash] = await Promise.all([
+              import("./admin/ProtectAdmin"),
+              import("./admin/AdminDashBoard")
+            ]);
+            return {
+              Component: () => (
+                <Protect.default>
+                  <Dash.default />
+                </Protect.default>
+              )
+            }
+          }
+        }
+      ]
+    }
+  ])
+
+  return <RouterProvider router={router} />
 }
 
 export default Router

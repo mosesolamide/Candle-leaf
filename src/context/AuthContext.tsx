@@ -207,7 +207,7 @@ export default function AuthContextProvider({
       return { success: false, error: err.message}
     }
   }
-
+  
   return (
     <AuthContext.Provider
       value={{

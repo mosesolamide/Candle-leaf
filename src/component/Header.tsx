@@ -71,7 +71,8 @@ export default function Navbar() {
           </div>
         ):
         (
-        <ul className="flex space-x-4 text-gray-700 mt-2 md:mt-0">
+        <ul className="flex space-x-4 items-center text-gray-700 mt-2 md:mt-0">
+          <p>Hi, {session.user.user_metadata.full_name}</p>
           <NavLink
             to="/cart"
             className={ ({isActive}) => isActive? 'text-green-600': ''  }
@@ -81,15 +82,7 @@ export default function Navbar() {
                 className="cursor-pointer hover:text-green-600"
             />
           </NavLink>
-          <NavLink
-            to='/user'
-            className={ ({isActive}) => isActive? 'text-green-600': ''  }
-          >
-            <CiUser
-                size={28}
-                className="cursor-pointer hover:text-green-600"
-            />
-          </NavLink>
+
           <button
             onClick={handleSignout}
             type="button"
