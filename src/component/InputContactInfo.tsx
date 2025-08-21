@@ -2,7 +2,7 @@ import type { JSX } from "react"
 
 export default function InputContactInfo(): JSX.Element {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-6 md:px-0">
       {/* Contact */}
       <div>
         <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-2 gap-2">
