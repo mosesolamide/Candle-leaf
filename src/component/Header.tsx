@@ -3,8 +3,8 @@ import { NavLink } from "react-router"
 import { MdOutlineShoppingCart } from "react-icons/md"
 import { CiMenuBurger } from "react-icons/ci"
 import { IoIosLogOut } from "react-icons/io"
-import Logo from "../assets/logo.webp"
 import { useAuth } from "../context/AuthContext"
+import Logo from "./Logo"
 
 export default function Navbar() {
     const { session, signOut, setMessage, setShowMessage } = useAuth()
@@ -24,7 +24,7 @@ export default function Navbar() {
     <nav className="flex items-center justify-between py-4 px-6 bg-white shadow-md">
       {/* Logo */}
       <div className="flex-shrink-0">
-        <img src={Logo} alt="Candle Leaf logo" className="h-10 w-auto" />
+        <Logo />
       </div>
 
       {/* Desktop Menu */}

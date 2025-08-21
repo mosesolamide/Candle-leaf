@@ -1,6 +1,7 @@
-import type { JSX } from "react";
-import { NavLink } from "react-router";
-import WhiteLogo from "../assets/logo_white.webp";
+import type { JSX } from "react"
+import { NavLink } from "react-router"
+import WhiteLogo from "../assets/logo_white.webp"
+import Logo from "./Logo";
 
 export default function Footer(): JSX.Element {
   return (
@@ -8,11 +9,7 @@ export default function Footer(): JSX.Element {
       <div className="border-t-1 border-white flex flex-col justify-center items-center md:flex-row md:py-6">
         {/* Logo & description */}
         <div className="md:mr-auto">
-          <img
-            src={WhiteLogo}
-            alt="candle leaf logo"
-            className="h-16 w-auto"
-          />
+          <Logo imgUrl={WhiteLogo} />
           <p className="text-sm font-light">
             Your natural candle made for <br /> your home and for your wellness.
           </p>

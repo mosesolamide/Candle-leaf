@@ -71,6 +71,43 @@ function Router() {
         return { Component: mod.default }
       }
     },
+    {
+      path: "/checkout",
+      lazy: async () => {
+        const mod = await import("./component/CheckoutLayout")
+        return { Component: mod.default }
+      },
+      children: [
+        {
+          index: true,
+          lazy: async () => {
+            const mod = await import("./component/InputContactInfo")
+            return { Component: mod.default }
+          }
+        },
+        {
+          path: "shipping",
+          lazy: async () => {
+            const mod = await import("./component/Shipping")
+            return{ Component: mod.default }
+          }
+        },
+        {
+          path: "payment",
+          lazy: async () => {
+            const mod = await import("./component/Payment")
+            return{ Component: mod.default }
+          }
+        },
+                {
+          path: "confirm",
+          lazy: async () => {
+            const mod = await import("./component/Done")
+            return{ Component: mod.default }
+          }
+        }
+      ]
+    },
 
     // Admin routes
     {

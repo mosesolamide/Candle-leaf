@@ -50,6 +50,7 @@ export default function Cart(): JSX.Element {
             <th>Price</th>
             <th>Quantity</th>
             <th>Total</th>
+            <th></th>
           </tr>
         </thead>
 
@@ -78,7 +79,7 @@ export default function Cart(): JSX.Element {
               </td>
               <td className="py-4">${item.quantity * item.price}</td>
               <td className="py-4 cursor-pointer">
-                <RiDeleteBinLine onClick={() => handleDelete(item.product_id)} />
+                <RiDeleteBinLine className="text-lg md:text-2xl text-red-600" onClick={() => handleDelete(item.product_id)} />
               </td>
             </tr>
           ))}
@@ -87,7 +88,12 @@ export default function Cart(): JSX.Element {
       <div className="flex gap-4 mt-6 items-center">
         <span className="font-bold">Sub-total:</span>
         <span>${total}</span>
-        <button className="px-6 py-1 bg-[#56B280] text-white rounded-sm">Checkout</button>
+        <Link 
+          to='/checkout' 
+          className="px-6 py-1 bg-[#56B280] text-white rounded-sm"
+        >
+          Checkout
+        </Link>
       </div>
     </div>
   )
