@@ -23,9 +23,9 @@ export default function CheckoutLayout():JSX.Element{
         <div className="min-w-[350px] md:max-w-[550px] md:mx-auto flex flex-col justify-center items-center my-10">
             <Logo />
             <div className="space-x-3 font-medium text-gray-500 mt-6">
-                <span className="text-[#56B280]">Card {">"}</span>
-                <span className={pathName !== "/checkout"?"text-[#56B280]": "text-black"}>Details {">"}</span>
-                <span className={pathName !== "/checkout/shipping"?"text-[#56B280]": "text-black"}>Shipping {">"}</span>
+                <span>Card {">"}</span>
+                <span>Details {">"}</span>
+                <span>Shipping {">"}</span>
                 <span>Payment</span>
             </div>
             <form action="">
